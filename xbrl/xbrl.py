@@ -197,12 +197,15 @@ class XBRLParser(object):
         except IndexError:
             raise XBRLParserException('problem getting contexts')
 
-        assets = xbrl.find_all("us-gaap:assets")
+        assets = \
+            xbrl.find_all(name=re.compile(r"(us-gaap:Assets\b)",
+                          re.IGNORECASE | re.MULTILINE))
         gaap_obj.assets = self.data_processing(assets, xbrl,
             ignore_errors, logger, context_ids)
 
         current_assets = \
-            xbrl.find_all("us-gaap:assetscurrent")
+            xbrl.find_all(name=re.compile("(us-gaap:AssetsCurrent)",
+                          re.IGNORECASE | re.MULTILINE))
         gaap_obj.current_assets = self.data_processing(current_assets,
             xbrl, ignore_errors, logger, context_ids)
 

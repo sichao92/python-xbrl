@@ -19,23 +19,26 @@ for root, dirs, files in os.walk("."):
     for file in files:
         print (file)
         if re.match(r"[a-z]{3,5}\-[0-9]{8}\.xml",file):
+        #if re.match(r"aaww-20131231.xml",file):
             # Parse an incoming XBRL file
             xbrl = xbrl_parser.parse(file)
             print("Process {}".format(os.path.join(root,file)))
             date_of_doc = re.search(r"[0-9]{8}",file).group()
             # Parse just the GAAP data from the xbrl object
             gaap_obj = xbrl_parser.parseGAAP(xbrl,
-                                 	     doc_date="20130629",
+                                 	     doc_date=date_of_doc,
                                  	     context="current",
                                  	     ignore_errors=0)
             
             result = serializer.dump(gaap_obj)
             
-            # Print out the serialized GAAP data
-            # print (result)
+            #Print out the serialized GAAP data
+            print (result)
             attribute = [x.encode('ascii') for x in result[0].keys()]
             values = result[0].values()
+            print(values)
             df.loc[file] = values
+df.to_csv('./output.csv')
 print (df)
 
 
